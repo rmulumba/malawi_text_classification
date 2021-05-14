@@ -6,7 +6,7 @@ from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 
-def predict():
+def predict(model = 'lr'):
     submission_file_name = utils.next_output_file_name(config.OUTPUT_PATH)
 
     Le = LabelEncoder()
@@ -14,7 +14,10 @@ def predict():
     train = utils.load_dataset(config.TRAIN_PATH)
     train["Label"] = Le.fit_transform(train["Label"])
 
-    model = pickle.load(open(config.MODEL_PATH + config.LOG_REG_MODEL, 'rb'))
+    if model == 'lr':
+        model = pickle.load(open(config.MODEL_PATH + config.LOG_REG_MODEL, 'rb'))
+    else:
+        model = pickle.load(open(config.MODEL_PATH + config.LIGHTGBM_MODEL, 'rb'))
 
     test = utils.load_dataset(config.TEST_PATH)
     test['Text'] = test['Text'].apply(utils.process_sentence)
